@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <!--    servlets-->
+    <servlet>
+        <servlet-name>PatientServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.PatientServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>DoctorServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.DoctorServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>HospitalServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.HospitalServlet</servlet-class>
+    </servlet>
+
+
+    <servlet>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.StatisticsServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>HospitalListServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.HospitalListServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>DoctorLoginServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.DoctorLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PatientLoginServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.PatientLoginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>MohLoginServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.MohLoginServlet</servlet-class>
+    </servlet>
+
+
+    <!--    servlet mappings-->
+    <servlet-mapping>
+        <servlet-name>PatientServlet</servlet-name>
+        <url-pattern>/patientRegister</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DoctorServlet</servlet-name>
+        <url-pattern>/doctorRegister</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>HospitalServlet</servlet-name>
+        <url-pattern>/hospitalRegister</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StatisticsServlet</servlet-name>
+        <url-pattern>/Statistics</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HospitalListServlet</servlet-name>
+        <url-pattern>/HospitalList</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>DoctorLoginServlet</servlet-name>
+        <url-pattern>/DoctorLogin</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>PatientLoginServlet</servlet-name>
+        <url-pattern>/PatientLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MohLoginServlet</servlet-name>
+        <url-pattern>/MohLogin</url-pattern>
+    </servlet-mapping>
+
+
+
+
+</web-app>
