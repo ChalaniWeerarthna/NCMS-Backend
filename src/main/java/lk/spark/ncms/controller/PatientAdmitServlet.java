@@ -28,6 +28,7 @@ public class PatientAdmitServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String patient_id = request.getParameter("patient_id");
         String hospital_id = request.getParameter("hospital_id");
+        String bed_id = request.getParameter("bed_id");
         String severity_level = request.getParameter("severity_level");
         String admitted_by = request.getParameter("admitted_by");
         String admit_date = request.getParameter("admit_date");
@@ -36,6 +37,7 @@ public class PatientAdmitServlet extends HttpServlet {
         Patient patient = new Patient();
         patient.setPatient_id(patient_id);
         patient.setHospital_id(hospital_id);
+        patient.setBed_id(bed_id);
         patient.setSeverity_level(severity_level);
         patient.setAdmitted_by(admitted_by);
         patient.setAdmit_date(admit_date);

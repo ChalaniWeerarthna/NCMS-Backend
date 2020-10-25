@@ -24,6 +24,16 @@ public class Patient {
     private String gender;
     private String discharged_by;
     private String discharge_date;
+    private String bed_id;
+
+
+    public String getBed_id() {
+        return bed_id;
+    }
+
+    public void setBed_id(String bed_id) {
+        this.bed_id = bed_id;
+    }
 
     public String getGender() {
         return gender;
@@ -182,6 +192,7 @@ public class Patient {
                 this.location_y= resultSet.getString("location_y");
                 this.severity_level = resultSet.getString("severity_level");
                 this.hospital_id= resultSet.getString("hospital_id");
+                this.bed_id= resultSet.getString("bed_id");
                 this.gender = resultSet.getString("gender");
                 this.contact = resultSet.getString("contact");
                 this.email = resultSet.getString("email");
@@ -211,6 +222,7 @@ public class Patient {
         data.addProperty("location_y", this.location_y);
         data.addProperty("district", this.severity_level);
         data.addProperty("district", this.hospital_id);
+        data.addProperty("district", this.bed_id);
         data.addProperty("district", this.gender);
         data.addProperty("contact", this.contact);
         data.addProperty("email", this.email);

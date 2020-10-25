@@ -1205,11 +1205,11 @@
     </column>
     <column id="375" parent="347" name="location_x">
       <Position>5</Position>
-      <DataType>int(11)|0s</DataType>
+      <DataType>varchar(11)|0s</DataType>
     </column>
     <column id="376" parent="347" name="location_y">
       <Position>6</Position>
-      <DataType>int(11)|0s</DataType>
+      <DataType>varchar(11)|0s</DataType>
     </column>
     <column id="377" parent="347" name="severity_level">
       <Position>7</Position>
@@ -1219,81 +1219,78 @@
       <Position>8</Position>
       <DataType>varchar(11)|0s</DataType>
     </column>
-    <column id="379" parent="347" name="gender">
+    <column id="379" parent="347" name="bed_id">
       <Position>9</Position>
+      <DataType>varchar(20)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="380" parent="347" name="gender">
+      <Position>10</Position>
       <DataType>varchar(10)|0s</DataType>
     </column>
-    <column id="380" parent="347" name="contact">
-      <Position>10</Position>
-      <DataType>varchar(45)|0s</DataType>
-    </column>
-    <column id="381" parent="347" name="email">
+    <column id="381" parent="347" name="contact">
       <Position>11</Position>
       <DataType>varchar(45)|0s</DataType>
     </column>
-    <column id="382" parent="347" name="age">
+    <column id="382" parent="347" name="email">
       <Position>12</Position>
-      <DataType>int(11)|0s</DataType>
+      <DataType>varchar(45)|0s</DataType>
     </column>
-    <column id="383" parent="347" name="admit_date">
+    <column id="383" parent="347" name="age">
       <Position>13</Position>
-      <DataType>varchar(20)|0s</DataType>
+      <DataType>varchar(11)|0s</DataType>
     </column>
-    <column id="384" parent="347" name="admitted_by">
+    <column id="384" parent="347" name="admit_date">
       <Position>14</Position>
-      <DataType>varchar(45)|0s</DataType>
+      <DataType>date|0s</DataType>
     </column>
-    <column id="385" parent="347" name="discharge_date">
+    <column id="385" parent="347" name="admitted_by">
       <Position>15</Position>
-      <DataType>varchar(20)|0s</DataType>
-    </column>
-    <column id="386" parent="347" name="discharged_by">
-      <Position>16</Position>
       <DataType>varchar(45)|0s</DataType>
     </column>
-    <index id="387" parent="347" name="admitted_by">
-      <ColNames>admitted_by</ColNames>
-      <Type>btree</Type>
-    </index>
-    <index id="388" parent="347" name="discharged_by">
-      <ColNames>discharged_by</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="389" parent="347" name="PRIMARY">
+    <column id="386" parent="347" name="discharge_date">
+      <Position>16</Position>
+      <DataType>date|0s</DataType>
+    </column>
+    <column id="387" parent="347" name="discharged_by">
+      <Position>17</Position>
+      <DataType>varchar(45)|0s</DataType>
+    </column>
+    <key id="388" parent="347" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>patient_id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="390" parent="347" name="patient_ibfk_1">
+    <foreign-key id="389" parent="347" name="patient_ibfk_1">
       <ColNames>admitted_by</ColNames>
       <RefTableName>doctor</RefTableName>
       <RefColNames>doctor_id</RefColNames>
     </foreign-key>
-    <foreign-key id="391" parent="347" name="patient_ibfk_2">
+    <foreign-key id="390" parent="347" name="patient_ibfk_2">
       <ColNames>discharged_by</ColNames>
       <RefTableName>doctor</RefTableName>
       <RefColNames>doctor_id</RefColNames>
     </foreign-key>
-    <column id="392" parent="348" name="id">
+    <column id="391" parent="348" name="id">
       <Position>1</Position>
       <DataType>int(11)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="393" parent="348" name="patient_id">
+    <column id="392" parent="348" name="patient_id">
       <Position>2</Position>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="394" parent="348" name="patient_id">
+    <index id="393" parent="348" name="patient_id">
       <ColNames>patient_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="395" parent="348" name="PRIMARY">
+    <key id="394" parent="348" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="396" parent="348" name="patient_queue_ibfk_1">
+    <foreign-key id="395" parent="348" name="patient_queue_ibfk_1">
       <ColNames>patient_id</ColNames>
       <RefTableName>patient</RefTableName>
       <RefColNames>patient_id</RefColNames>

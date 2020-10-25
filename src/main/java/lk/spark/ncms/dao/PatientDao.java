@@ -78,7 +78,7 @@ public class PatientDao {
         return "something wrong!";
     }
     public String admitPatient(Patient patient) {
-        String INSERT_USERS_SQL = "UPDATE patient SET  hospital_id=?,severity_level=?, admitted_by=?, admit_date=? WHERE patient_id=? ";
+        String INSERT_USERS_SQL = "UPDATE patient SET  hospital_id=?,bed_id=?,severity_level=?, admitted_by=?, admit_date=? WHERE patient_id=? ";
 
 
         Connection connection = null;
@@ -92,10 +92,11 @@ public class PatientDao {
             // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
             preparedStatement.setString(1, patient.getHospital_id());
-            preparedStatement.setString(2, patient.getSeverity_level());
-            preparedStatement.setString(3, patient.getAdmitted_by());
-            preparedStatement.setString(4, patient.getAdmit_date());
-            preparedStatement.setString(5, patient.getPatient_id());
+            preparedStatement.setString(2, patient.getBed_id());
+            preparedStatement.setString(3, patient.getSeverity_level());
+            preparedStatement.setString(4, patient.getAdmitted_by());
+            preparedStatement.setString(5, patient.getAdmit_date());
+            preparedStatement.setString(6, patient.getPatient_id());
 
 
             System.out.println(preparedStatement);
