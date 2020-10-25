@@ -26,7 +26,7 @@ public class PatientServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    //////////// Register Patient
+    //////////// Register Patient////////////////////
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String patient_id = request.getParameter("patient_id");

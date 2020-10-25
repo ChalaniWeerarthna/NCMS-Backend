@@ -43,6 +43,10 @@
         <servlet-name>MohLoginServlet</servlet-name>
         <servlet-class>lk.spark.ncms.controller.MohLoginServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PatientAdmitServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.PatientAdmitServlet</servlet-class>
+    </servlet>
 
 
     <!--    servlet mappings-->
@@ -82,6 +86,10 @@
     <servlet-mapping>
         <servlet-name>MohLoginServlet</servlet-name>
         <url-pattern>/MohLogin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PatientAdmitServlet</servlet-name>
+        <url-pattern>/AdmitPatient</url-pattern>
     </servlet-mapping>
 
 
