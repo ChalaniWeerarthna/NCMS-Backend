@@ -47,6 +47,10 @@
         <servlet-name>PatientAdmitServlet</servlet-name>
         <servlet-class>lk.spark.ncms.controller.PatientAdmitServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PatientDischargeServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.PatientDischargeServlet</servlet-class>
+    </servlet>
 
 
     <!--    servlet mappings-->
@@ -89,7 +93,11 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PatientAdmitServlet</servlet-name>
-        <url-pattern>/AdmitPatient</url-pattern>
+        <url-pattern>/PatientAdmit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PatientDischargeServlet</servlet-name>
+        <url-pattern>/PatientDischarge</url-pattern>
     </servlet-mapping>
 
 
