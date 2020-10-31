@@ -13,7 +13,7 @@ import java.util.UUID;
 public class HospitalDao {
     public String registerHospital(Hospital hospital) {
 
-        String INSERT_USERS_SQL = "INSERT INTO hospital (hospital_id, name, district, location_x, location_y) VALUES (?, ?, ?, ?, ?)";
+        String INSERT_USERS_SQL = "INSERT INTO hospital (hospital_id, name, district, location_x, location_y,build_date) VALUES (?, ?, ?, ?, ?,?)";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -27,8 +27,9 @@ public class HospitalDao {
             preparedStatement.setString(1, hospital.getHospital_id());
             preparedStatement.setString(2, hospital.getName());
             preparedStatement.setString(3, hospital.getDistrict());
-            preparedStatement.setString(4, hospital.getLocation_x());
-            preparedStatement.setString(5, hospital.getLocation_y());
+            preparedStatement.setString(4, String.valueOf(hospital.getLocation_x()));
+            preparedStatement.setString(5, String.valueOf(hospital.getLocation_y()));
+            preparedStatement.setString(6, hospital.getBuild_date());
 
             System.out.println(preparedStatement);
 

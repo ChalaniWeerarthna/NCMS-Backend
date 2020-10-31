@@ -14,7 +14,7 @@ public class Doctor {
     private String full_name;
     private String email;
     private String hospital_id;
-    private boolean is_director;
+    private String is_director;
 
     public String getDoctor_id() {
         return doctor_id;
@@ -28,7 +28,7 @@ public class Doctor {
         return full_name;
     }
 
-    public void setFull_Name(String full_name) {
+    public void setFull_name(String full_name) {
         this.full_name = full_name;
     }
 
@@ -44,11 +44,11 @@ public class Doctor {
         this.hospital_id = hospital_id;
     }
 
-    public boolean isIs_director() {
+    public String getIs_director() {
         return is_director;
     }
 
-    public void setIs_director(boolean is_director) {
+    public void setIs_director(String is_director) {
         this.is_director = is_director;
     }
 
@@ -71,10 +71,10 @@ public class Doctor {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 this.doctor_id = resultSet.getString("doctor_id");
-                this.full_name = resultSet.getString("name");
+                this.full_name = resultSet.getString("full_name");
                 this.email = resultSet.getString("email");
                 this.hospital_id = resultSet.getString("hospital_id");
-                this.is_director= resultSet.getBoolean("is_director");
+                this.is_director= resultSet.getString("is_director");
             }
 
             connection.close();

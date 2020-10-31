@@ -3,6 +3,7 @@ package lk.spark.ncms.controller;
 
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import lk.spark.ncms.bean.Hospital;
 import lk.spark.ncms.database.DBConnectionPool;
 import lk.spark.ncms.dao.HospitalDao;
@@ -26,57 +27,11 @@ import java.sql.ResultSet;
 @WebServlet(name = "HospitalListServlet")
 public class HospitalListServlet extends HttpServlet {
 
-    //add hospital
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String hospital_id = request.getParameter("hospital_id");
-        String name = request.getParameter("name");
-        String district = request.getParameter("district");
-        String location_x = request.getParameter("location_x");
-        String location_y = request.getParameter("location_y");
-
-        Hospital hospital = new Hospital();
-        hospital.setHospital_id(hospital_id);
-        hospital.setName(name);
-        hospital.setDistrict(district);
-        hospital.setLocation_x(location_x);
-        hospital.setLocation_y(location_x);
-
-        HospitalDao hospitalDao = new HospitalDao();
-        String hospitalRegistered = hospitalDao.registerHospital(hospital);
-
-        if(hospitalRegistered.equals("SUCCESS"))   //On success, you can display a message to user on Home page
-        {
-            System.out.println("Success");
-        }
-        else   //On Failure, display a meaningful message to the User.
-        {
-            System.out.println("Failed");
-        }
-
-        String patient_id = request.getParameter("patient_id");
-        hospital_id = request.getParameter("hospital_id");
-
-        Doctor doctor = new Doctor();
-        doctor.dischargePatients(patient_id, hospital_id);
-
-        Bed bed = new Bed();
-        bed.makeAvailable(patient_id, hospital_id);
-
-        try {
-            hospitalDao.registerHospital(hospital);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-     ////////////////////view hospital///////////////
+     ////////////////////view hospital list///////////////
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String hospital_id = request.getParameter("hospital_id");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -85,136 +40,33 @@ public class HospitalListServlet extends HttpServlet {
         try {
             connection = DBConnectionPool.getInstance().getConnection();
             ResultSet resultSet;
+            JsonArray hospitals = new JsonArray();
 
-            statement = connection.prepareStatement("SELECT * FROM hospital WHERE hospital_id=?");
-            statement.setString(1, hospital_id);
+//            statement = connection.prepareStatement("SELECT hospital.*, (SELECT COUNT(*) FROM beds WHERE beds.hospital_id = hospital.hospital_id AND beds.bed_id IS NOT NULL) AS patient_count FROM hospital INNER JOIN doctor ON doctor.hospital_id = hospital.hospital_id");
+            statement = connection.prepareStatement("SELECT * FROM hospital" );
             System.out.println(statement);
             resultSet = statement.executeQuery();
-
             while (resultSet.next()) {
-                hospital_id = resultSet.getString("hospital_id");
-                String name = resultSet.getString("name");
-                String district=resultSet.getString("district");
-                String location_x = resultSet.getString("location_x");
-                String location_y = resultSet.getString("location_y");
-
-                PrintWriter printWriter = response.getWriter();
-
-//                printWriter.println( hospital_id);
-//                printWriter.println( name);
-//                printWriter.println( district);
-//                printWriter.println(x_location);
-//                printWriter.println( y_location);
-
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("hospital_id", hospital_id);
-                jsonObject.addProperty("name", name);
-                jsonObject.addProperty("district", district);
-                jsonObject.addProperty("location_x", location_x);
-                jsonObject.addProperty("location_y", location_y);
-                printWriter.print(jsonObject.toString());
-
-                System.out.println("doGet hospital success");
-
+                JsonObject hospital = new JsonObject();
+                hospital.addProperty("hospital_id", resultSet.getString("hospital_id"));
+                hospital.addProperty("name", resultSet.getString("name"));
+                hospital.addProperty("district", resultSet.getString("district"));
+                hospital.addProperty("location_x", resultSet.getString("location_x"));
+                hospital.addProperty("location_y", resultSet.getString("location_y"));
+                hospital.addProperty("build_date", resultSet.getString("build_date"));
+//                hospital.addProperty("patient_count", resultSet.getInt("patient_count"));
+                hospitals.add(hospital);
             }
-            connection.close();
+            System.out.println(hospitals) ;
 
-        } catch (Exception exception) {
-
-        }
-    }
-
-    /* Discharge patient by director and make the bed available for other patients
-     * ---------delete hospital--------------
-     * */
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try{
-            connection = DBConnectionPool.getInstance().getConnection();
-
-            String hospital_id = request.getParameter("hospital_id");
-
-            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM hospital WHERE hospital_id=?");
-            pstmt.setString(1, hospital_id);
-            pstmt.executeUpdate();
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
-
-        String patient_id = request.getParameter("patient_id");
-        String hospital_id = request.getParameter("hospital_id");
-
-        Hospital hospital=new Hospital();
-
-        Doctor doctor = new Doctor();
-        doctor.dischargePatients(patient_id, hospital_id);
-
-        Bed bed = new Bed();
-        bed.makeAvailable(patient_id, hospital_id);
-    }
-
-
-    /////////////////////update hospital/////////////////////
-@Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        String hospital_id = request.getParameter("hospital_id");
-        String name = request.getParameter("name");
-        String district = request.getParameter("district");
-        String location_x = request.getParameter("location_x");
-        String location_y = request.getParameter("location_y");
-
-        try {
-            Connection connection = DBConnectionPool.getInstance().getConnection();
-            PreparedStatement statement=null;
-            int result=0;
-
-            statement = connection.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, x_location=?,y_location=? WHERE hospital_id=?");
-            ResultSet resultSet;
-
-            statement.setString(1,hospital_id);
-            statement.setString(2,name);
-            statement.setString(3, district);
-            statement.setString(4, location_x);
-            statement.setString(5, location_x);
-            result = statement.executeUpdate();
+            PrintWriter printWriter = resp.getWriter();
+            printWriter.println(hospitals.toString());
 
             connection.close();
-            PrintWriter printWriter = response.getWriter();
-
-            JsonObject dataObject = new JsonObject();
-            dataObject.addProperty("hospital_id", hospital_id);
-            dataObject.addProperty("name", name);
-            dataObject.addProperty("district", district);
-            dataObject.addProperty("location_x", location_x);
-            dataObject.addProperty("location_x", location_x);
-            printWriter.print(dataObject.toString());
-
-
-
-            printWriter.println(hospital_id);
-            printWriter.println(name);
-            printWriter.println(district);
-            printWriter.println(location_x);
-            printWriter.println(location_y);
-
-
-            System.out.println("update success");
-
-
-//            result = statement.executeUpdate();
-            if (result != 0){
-                System.out.println("Successfully updated");//updated successfully
-            }else{
-                System.out.println("Update failed");//update process failed
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+
 
 }

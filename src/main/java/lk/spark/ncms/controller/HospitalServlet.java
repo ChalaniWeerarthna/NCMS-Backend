@@ -31,8 +31,9 @@ public class HospitalServlet extends HttpServlet {
         String hospital_id = request.getParameter("hospital_id");
         String name = request.getParameter("name");
         String district = request.getParameter("district");
-        String location_x = request.getParameter("location_x");
-        String location_y = request.getParameter("location_y");
+        int location_x = Integer.parseInt(request.getParameter("location_x"));
+        int location_y = Integer.parseInt(request.getParameter("location_y"));
+        String build_date = request.getParameter("build_date");
 
         Hospital hospital = new Hospital();
         hospital.setHospital_id(hospital_id);
@@ -40,6 +41,7 @@ public class HospitalServlet extends HttpServlet {
         hospital.setDistrict(district);
         hospital.setLocation_x(location_x);
         hospital.setLocation_y(location_y);
+        hospital.setBuild_date(build_date);
 
         HospitalDao hospitalDao = new HospitalDao();
         String hospitalRegistered = hospitalDao.registerHospital(hospital);
@@ -95,6 +97,7 @@ public class HospitalServlet extends HttpServlet {
                 String district=resultSet.getString("district");
                 String location_x = resultSet.getString("location_x");
                 String location_y = resultSet.getString("location_y");
+                String build_date = resultSet.getString("build_date");
 
                 PrintWriter printWriter = response.getWriter();
 
@@ -110,6 +113,7 @@ public class HospitalServlet extends HttpServlet {
                 jsonObject.addProperty("district", district);
                 jsonObject.addProperty("location_x", location_x);
                 jsonObject.addProperty("location_y", location_y);
+                jsonObject.addProperty("build_date", build_date);
                 printWriter.print(jsonObject.toString());
 
                 System.out.println("doGet hospital success");
@@ -164,13 +168,14 @@ public class HospitalServlet extends HttpServlet {
         String district = request.getParameter("district");
         String location_x = request.getParameter("location_x");
         String location_y = request.getParameter("location_y");
+        String build_date = request.getParameter("build_date");
 
         try {
             Connection connection = DBConnectionPool.getInstance().getConnection();
             PreparedStatement statement=null;
             int result=0;
 
-            statement = connection.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, location_x=?,location_y=? WHERE hospital_id=?");
+            statement = connection.prepareStatement("UPDATE hospital SET  hospital_id=?,name=?, district=?, location_x=?,location_y=?,build_date=? WHERE hospital_id=?");
             ResultSet resultSet;
 
             statement.setString(1,hospital_id);
@@ -178,6 +183,7 @@ public class HospitalServlet extends HttpServlet {
             statement.setString(3, district);
             statement.setString(4, location_x);
             statement.setString(5, location_y);
+            statement.setString(6, build_date);
             result = statement.executeUpdate();
 
             connection.close();
@@ -189,6 +195,7 @@ public class HospitalServlet extends HttpServlet {
             dataObject.addProperty("district", district);
             dataObject.addProperty("location_x", location_x);
             dataObject.addProperty("location_y", location_y);
+            dataObject.addProperty("build_date", build_date);
             printWriter.print(dataObject.toString());
 
 

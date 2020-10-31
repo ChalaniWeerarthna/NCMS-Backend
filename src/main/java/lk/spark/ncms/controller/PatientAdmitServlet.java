@@ -20,7 +20,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
-import java.util.Date;
+//import java.util.Date;
+import java.sql.Date;
 
 @WebServlet(name = "PatientAdmitServlet")
 public class PatientAdmitServlet extends HttpServlet {
@@ -31,7 +32,7 @@ public class PatientAdmitServlet extends HttpServlet {
         String bed_id = request.getParameter("bed_id");
         String severity_level = request.getParameter("severity_level");
         String admitted_by = request.getParameter("admitted_by");
-        String admit_date = request.getParameter("admit_date");
+        Date admit_date = Date.valueOf(request.getParameter("admit_date"));
 
 
         Patient patient = new Patient();

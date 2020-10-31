@@ -31,11 +31,11 @@ public class DoctorServlet extends HttpServlet {
         String full_name = request.getParameter("full_name");
         String email = request.getParameter("email");
         String hospital_id = request.getParameter("hospital_id");
-        Boolean is_director = Boolean.valueOf(request.getParameter("is_director"));
+        String is_director = request.getParameter("is_director");
 
         Doctor doctor = new Doctor();
         doctor.setDoctor_id(doctor_id);
-        doctor.setFull_Name(full_name);
+        doctor.setFull_name(full_name);
         doctor.setEmail(email);
         doctor.setHospital_id(hospital_id);
         doctor.setIs_director(is_director);

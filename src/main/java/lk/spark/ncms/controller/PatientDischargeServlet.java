@@ -6,6 +6,8 @@ import lk.spark.ncms.dao.MohDao;
 import lk.spark.ncms.dao.PatientDao;
 import lk.spark.ncms.database.DBConnectionPool;
 import lk.spark.ncms.bean.Patient;
+import lk.spark.ncms.bean.Bed;
+import lk.spark.ncms.bean.Hospital;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,25 +21,30 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Base64;
-import java.util.Date;
+import java.sql.Date;
 
 @WebServlet(name = "PatientDischargeServlet")
 public class PatientDischargeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String patient_id = request.getParameter("patient_id");
+        String hospital_id = request.getParameter("hospital_id");
         String discharged_by = request.getParameter("discharged_by");
-        String discharge_date = request.getParameter("discharge_date");
+        Date discharge_date = Date.valueOf(request.getParameter("discharge_date"));
 
 
         Patient patient = new Patient();
         patient.setPatient_id(patient_id);
+      //  patient.setDischarged_by(hospital_id);
         patient.setDischarged_by(discharged_by);
         patient.setDischarge_date(discharge_date);
 
 
         PatientDao patientDao = new PatientDao();
         String patientDischarged = patientDao.dischargePatient(patient);
+
+        Bed bed = new Bed();
+        bed.makeAvailable(patient_id, hospital_id);
 
         if (patientDischarged.equals("SUCCESS")) { //On success, you can display a message to user on Home page
 

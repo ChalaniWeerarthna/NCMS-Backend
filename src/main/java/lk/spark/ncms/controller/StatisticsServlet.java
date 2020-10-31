@@ -14,6 +14,8 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Date;
+
 
 @WebServlet(name = "StatisticsServlet")
 public class StatisticsServlet extends HttpServlet {
@@ -47,7 +49,9 @@ public class StatisticsServlet extends HttpServlet {
             JsonObject data = new JsonObject();
             JsonArray jsonArray;
 
-            ///////////////////////// Hospital level////////////////////////
+            /*
+            ------------hospital level--------------
+            */
 
             statement = connection.prepareStatement("SELECT name FROM hospital");
             resultSet1 = statement.executeQuery();
@@ -55,12 +59,14 @@ public class StatisticsServlet extends HttpServlet {
 
             while (resultSet1.next()) {
                 String  hospital_name = resultSet1.getString("name");
-                statement6 = connection.prepareStatement("SELECT COUNT(patient_id) AS hospitalLevel FROM patient  where discharge_date is null ORDER BY hospital_id");
+                statement6 = connection.prepareStatement("SELECT COUNT(beds.bed_id) AS hospitalLevel FROM beds INNER JOIN hospital ON beds.hospital_id = hospital.hospital_id WHERE hospital.name ='"+hospital_name+"'");
                 resultSet6 = statement6.executeQuery();
 
                 while (resultSet6.next()) {
                     int patientCount = resultSet6.getInt("hospitalLevel");
                     System.out.println(patientCount);
+
+
 
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("name", hospital_name);
@@ -68,29 +74,40 @@ public class StatisticsServlet extends HttpServlet {
 
                     jsonArray.add(jsonObject);
 
+//                    PrintWriter printWriter = response.getWriter();
+//
+//                    printWriter.println("Hospital name: " + hospital_name);
+//                    printWriter.println("Hospital Level Statistics: " + patientCount);
+//                    request.setAttribute("hosPatientCount", patientCount);
+//                    printWriter.println("\n");
                 }
 
                 data.add("hospitalPatients", jsonArray);
             }
 
 
-             /////////////////////// District level /////////////////////////////////
+             /*
+            ------------district level --------------
+            */
 
             statement7 = connection.prepareStatement("SELECT district FROM hospital");
             resultSet7 = statement7.executeQuery();
             jsonArray = new JsonArray();
             while (resultSet7.next()) {
                 String  district = resultSet7.getString("district");
-                statement2 = connection.prepareStatement("SELECT COUNT(patient_id) AS districtLevel FROM patient  where discharge_date is null ORDER BY district");
-
+                statement2 = connection.prepareStatement("SELECT COUNT(beds.bed_id) AS districtLevel FROM beds INNER JOIN hospital ON beds.hospital_id = hospital.hospital_id WHERE hospital.district ='" + district + "'");
+                statement5 = connection.prepareStatement("SELECT COUNT(patient_queue.id) AS queueDistrictLevel FROM patient_queue INNER JOIN patient ON patient.patient_id = patient_queue.patient_id WHERE patient.district ='" + district + "'");
                 System.out.println(statement2);
+                System.out.println(statement5);
                 resultSet2 = statement2.executeQuery();
-
+                resultSet5 = statement5.executeQuery();
 
 
                 while (resultSet2.next()) {
                     int disPatientCount = resultSet2.getInt("districtLevel");
-                    int districtPatientCount = disPatientCount;
+                    while (resultSet5.next()) {
+                        int queueDisPatient = resultSet5.getInt("queueDistrictLevel");
+                        int districtPatientCount = disPatientCount + queueDisPatient;
                         System.out.println(districtPatientCount);
 //                        PrintWriter printWriter = response.getWriter();
 
@@ -101,23 +118,31 @@ public class StatisticsServlet extends HttpServlet {
 
                         jsonArray.add(jsonObject);
 
+//                        printWriter.println("District: " + district);
+//                        printWriter.println("District Level Statistics: " + districtPatientCount);
+//                        request.setAttribute("disPatientCount", districtPatientCount);
+//                        printWriter.println("\n");
+                    }
                     data.add("districtPatients", jsonArray);
                 }
             }
 
 
-             ////////////////////////////// Country level//////////////////////////////////
+             /*
+            ------------country level--------------
+            */
 
-            statement3 = connection.prepareStatement("SELECT COUNT(patient_id) AS countryLevel FROM patient where discharge_date is null");
-
-
+            statement3 = connection.prepareStatement("SELECT COUNT(bed_id) AS countryLevel FROM beds");
+            statement4 = connection.prepareStatement("SELECT COUNT(id) AS countryLevelQueue FROM patient_queue");
             resultSet3 = statement3.executeQuery();
-
+            resultSet4 = statement4.executeQuery();
             jsonArray = new JsonArray();
             while (resultSet3.next()) {
                 int hospitalPatientCount = resultSet3.getInt("countryLevel");
-                int countryPatientCount = hospitalPatientCount ;
-                System.out.println(countryPatientCount);
+                while (resultSet4.next()) {
+                    int queuePatientCount = resultSet4.getInt("countryLevelQueue");
+                    int countryPatientCount = hospitalPatientCount + queuePatientCount;
+                    System.out.println(countryPatientCount);
 
 //                    PrintWriter printWriter = response.getWriter();
 
@@ -125,7 +150,10 @@ public class StatisticsServlet extends HttpServlet {
                     jsonObject.addProperty("statistics", countryPatientCount);
 
                     jsonArray.add(jsonObject);
-//
+//                    printWriter.println("Country Level Statistics: " + countryPatientCount);
+//                    request.setAttribute("couPatientCount", "50");
+                }
+
                 data.add("countryPatients", jsonArray);
             }
 

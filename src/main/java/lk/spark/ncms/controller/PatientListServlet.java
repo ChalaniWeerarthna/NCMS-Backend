@@ -41,12 +41,21 @@ public class PatientListServlet extends HttpServlet {
                 patient.addProperty("patient_id", resultSet.getString("patient_id"));
                 patient.addProperty("first_name", resultSet.getString("first_name"));
                 patient.addProperty("last_name", resultSet.getString("last_name"));
-                patient.addProperty("contact", resultSet.getString("contact"));
                 patient.addProperty("district", resultSet.getString("district"));
-                patient.addProperty("email", resultSet.getString("email"));
-                patient.addProperty("age", resultSet.getString("age"));
                 patient.addProperty("location_x", resultSet.getString("location_x"));
                 patient.addProperty("location_y", resultSet.getString("location_y"));
+                patient.addProperty("severity_level", resultSet.getString("severity_level"));
+                patient.addProperty("hospital_id", resultSet.getString("hospital_id"));
+                patient.addProperty("bed_id", resultSet.getString("bed_id"));
+                patient.addProperty("gender", resultSet.getString("gender"));
+                patient.addProperty("contact", resultSet.getString("contact"));
+                patient.addProperty("email", resultSet.getString("email"));
+                patient.addProperty("age", resultSet.getString("age"));
+                patient.addProperty("admit_date", resultSet.getString("admit_date"));
+                patient.addProperty("admitted_by", resultSet.getString("admitted_by"));
+                patient.addProperty("discharge_date", resultSet.getString("discharge_date"));
+                patient.addProperty("discharged_by", resultSet.getString("discharged_by"));
+
 //                hospital.addProperty("patient_count", resultSet.getInt("patient_count"));
                 patients.add(patient);
             }

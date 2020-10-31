@@ -25,7 +25,7 @@ public class DoctorDao {
             preparedStatement.setString(2, doctor.getFull_name());
             preparedStatement.setString(3,doctor.getEmail());
             preparedStatement.setString(4, doctor.getHospital_id());
-            preparedStatement.setBoolean(5, doctor.isIs_director());
+            preparedStatement.setString(5, doctor.getIs_director());
 
             System.out.println(preparedStatement);
             result = preparedStatement.executeUpdate();

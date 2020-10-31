@@ -1,40 +1,76 @@
 package lk.spark.ncms.dao;
-import lk.spark.ncms.bean.Doctor;
+import lk.spark.ncms.bean.Hospital;
 import lk.spark.ncms.database.DBConnectionPool;
 import lk.spark.ncms.bean.Patient;
+import lk.spark.ncms.bean.Bed;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Date;
 
 public class PatientDao {
     public String registerPatient(Patient patient) {
-        String INSERT_USERS_SQL = "INSERT INTO patient (patient_id, first_name, last_name,contact, district,email,age, location_x, location_y) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String INSERT_USERS_SQL = "INSERT INTO patient (patient_id, first_name, last_name, district,location_x, location_y,gender,contact,email,age ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        PreparedStatement statement2 = null;
 
         int result = 0;
 
         try {
             connection = DBConnectionPool.getInstance().getConnection();
-
+            ResultSet resultSet2;
             // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
             preparedStatement.setString(1, patient.getPatient_id());
             preparedStatement.setString(2, patient.getFirst_name());
             preparedStatement.setString(3, patient.getLast_name());
-            preparedStatement.setString(4, patient.getContact());
-            preparedStatement.setString(5, patient.getDistrict());
-            preparedStatement.setString(6, patient.getEmail());
-            preparedStatement.setString(7, patient.getAge());
-            preparedStatement.setString(8, patient.getLocation_x());
-            preparedStatement.setString(9, patient.getLocation_y());
+            preparedStatement.setString(4, patient.getDistrict());
+            preparedStatement.setInt(5, patient.getLocation_x());
+            preparedStatement.setInt(6, patient.getLocation_y());
+            preparedStatement.setString(7, patient.getGender());
+            preparedStatement.setString(8, patient.getContact());
+            preparedStatement.setString(9, patient.getEmail());
+            preparedStatement.setString(10, patient.getAge());
+
 
             System.out.println(preparedStatement);
             // Step 3: Execute the query or update query
             result = preparedStatement.executeUpdate();
+            Hospital hospital = new Hospital();
+            String nearestHospital = hospital.assignHospital(patient.getLocation_x(), patient.getLocation_y());
+            System.out.println("Nearest hospital: " + nearestHospital);
+
+            Bed bed = new Bed();
+            int bedId = bed.allocateBed(nearestHospital, patient.getPatient_id());
+            System.out.println("Bed ID: " + bedId);
+            int bedNo = 0;
+
+            if(bedId == 0){
+                statement2 = connection.prepareStatement("SELECT distinct hospital_id FROM hospital where hospital_id !='" + nearestHospital + "'");
+                System.out.println(statement2);
+                resultSet2 = statement2.executeQuery();
+                String hosId ="";
+                int queueLength;
+
+                /* Allocate a bed */
+                while(resultSet2.next()) {
+                    if(bedId==0) {
+                        hosId = resultSet2.getString("id");
+                        System.out.println(hosId);
+                        bedId = bed.allocateBed(hosId, patient.getPatient_id());
+                    }
+                }
+                /* If there is no available beds, add to queue */
+                bedNo = bedId;
+                if(bedNo == 0){
+                    QueueDao queue = new QueueDao();
+                    queueLength = queue.addToQueue(patient.getPatient_id());
+                }
+            }
 
             if (result!=0)  //Just to ensure data has been inserted into the database
                 return "SUCCESS";
@@ -79,7 +115,7 @@ public class PatientDao {
     }
     public String admitPatient(Patient patient) {
         String INSERT_USERS_SQL = "UPDATE patient SET  hospital_id=?,bed_id=?,severity_level=?, admitted_by=?, admit_date=? WHERE patient_id=? ";
-
+       // String INSERT_BEDS_SQL = "INSERT INTO beds (bed_id=?,hospital_id=?,patient_id=?) VALUES (?,?,?)";
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -95,7 +131,7 @@ public class PatientDao {
             preparedStatement.setString(2, patient.getBed_id());
             preparedStatement.setString(3, patient.getSeverity_level());
             preparedStatement.setString(4, patient.getAdmitted_by());
-            preparedStatement.setString(5, patient.getAdmit_date());
+            preparedStatement.setDate(5, (Date) patient.getAdmit_date());
             preparedStatement.setString(6, patient.getPatient_id());
 
 
@@ -128,7 +164,7 @@ public class PatientDao {
             // Step 2:Create a statement using connection object
             preparedStatement = connection.prepareStatement(INSERT_USERS_SQL);
             preparedStatement.setString(1, patient.getDischarged_by());
-            preparedStatement.setString(2, patient.getDischarge_date());
+            preparedStatement.setDate(2, (Date) patient.getDischarge_date());
             preparedStatement.setString(3, patient.getPatient_id());
 
 

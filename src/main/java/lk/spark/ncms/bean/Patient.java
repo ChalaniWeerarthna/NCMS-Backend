@@ -5,7 +5,8 @@ import lk.spark.ncms.database.DBConnectionPool;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.Date;
+//import java.util.Date;
+import java.sql.Date;
 
 public class Patient {
     private String patient_id;
@@ -15,15 +16,15 @@ public class Patient {
     private String district;
     private String email;
     private String age;
-    private String location_x;
-    private String location_y;
+    private int location_x;
+    private int location_y;
     private String hospital_id;
     private String severity_level;
     private String admitted_by;
-    private String admit_date;
+    private Date admit_date;
     private String gender;
     private String discharged_by;
-    private String discharge_date;
+    private Date discharge_date;
     private String bed_id;
 
 
@@ -51,11 +52,11 @@ public class Patient {
         this.discharged_by = discharged_by;
     }
 
-    public String getDischarge_date() {
+    public Date getDischarge_date() {
         return discharge_date;
     }
 
-    public void setDischarge_date(String discharge_date) {
+    public void setDischarge_date(Date discharge_date) {
         this.discharge_date = discharge_date;
     }
 
@@ -84,11 +85,11 @@ public class Patient {
         this.admitted_by = admitted_by;
     }
 
-    public String getAdmit_date() {
+    public Date getAdmit_date() {
         return admit_date;
     }
 
-    public void setAdmit_date(String admit_date) {
+    public void setAdmit_date(Date admit_date) {
         this.admit_date = admit_date;
     }
 
@@ -159,19 +160,19 @@ public class Patient {
         this.age = age;
     }
 
-    public String getLocation_x() {
+    public int getLocation_x() {
         return location_x;
     }
 
-    public void setLocation_x(String x_location) {
+    public void setLocation_x(int location_x) {
         this.location_x = location_x;
     }
 
-    public String getLocation_y() {
+    public int getLocation_y() {
         return location_y;
     }
 
-    public void setLocation_y(String location_y) {
+    public void setLocation_y(int location_y) {
         this.location_y = location_y;
     }
 
@@ -188,8 +189,8 @@ public class Patient {
                 this.first_name = resultSet.getString("first_name");
                 this.last_name = resultSet.getString("last_name");
                 this.district= resultSet.getString("district");
-                this.location_x= resultSet.getString("location_x");
-                this.location_y= resultSet.getString("location_y");
+                this.location_x= Integer.parseInt(resultSet.getString("location_x"));
+                this.location_y= Integer.parseInt(resultSet.getString("location_y"));
                 this.severity_level = resultSet.getString("severity_level");
                 this.hospital_id= resultSet.getString("hospital_id");
                 this.bed_id= resultSet.getString("bed_id");
@@ -198,9 +199,9 @@ public class Patient {
                 this.email = resultSet.getString("email");
                 this.age= resultSet.getString("age");
                 this.admitted_by = resultSet.getString("admitted_by");
-                this.admit_date= resultSet.getString("admit_date");
+                this.admit_date= resultSet.getDate("admit_date");
                 this.discharged_by  = resultSet.getString("discharged_by ");
-                this.discharge_date= resultSet.getString("discharge_date");
+                this.discharge_date= resultSet.getDate("discharge_date");
 
             }
 
@@ -227,9 +228,9 @@ public class Patient {
         data.addProperty("contact", this.contact);
         data.addProperty("email", this.email);
         data.addProperty("age", this.age);
-        data.addProperty("district", this.admit_date);
+        data.addProperty("admit_date", this.admit_date != null ? this.admit_date.toString() : null);
         data.addProperty("district", this.admitted_by);
-        data.addProperty("district", this.discharge_date);
+        data.addProperty("discharge_date", this.discharge_date != null ? this.discharge_date.toString() : null);
         data.addProperty("district", this.discharged_by);
 
 

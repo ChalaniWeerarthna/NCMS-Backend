@@ -20,8 +20,18 @@ public class Hospital {
     private String hospital_id;
     private String name;
     private String district;
-    private String location_x;
-    private String location_y;
+    private int location_x;
+    private int location_y;
+
+    public String getBuild_date() {
+        return build_date;
+    }
+
+    public void setBuild_date(String build_date) {
+        this.build_date = build_date;
+    }
+
+    private String build_date;
 
     public Hospital() {
 
@@ -55,15 +65,15 @@ public class Hospital {
         this.district = district;
     }
 
-    public String getLocation_x() { return location_x; }
+    public int getLocation_x() { return location_x; }
 
-    public void setLocation_x(String location_x) { this.location_x = location_x; }
+    public void setLocation_x(int location_x) { this.location_x = location_x; }
 
-    public String getLocation_y() {
+    public int getLocation_y() {
         return location_y;
     }
 
-    public void setLocation_y(String location_y) { this.location_y = location_y; }
+    public void setLocation_y(int location_y) { this.location_y = location_y; }
 
     public JsonObject serialize() {
         JsonObject data = new JsonObject();
@@ -73,11 +83,12 @@ public class Hospital {
         data.addProperty("district", this.district);
         data.addProperty("location_x", this.location_x);
         data.addProperty("location_y", this.location_y);
+        data.addProperty("build_date", this.build_date);
 
         return data;
     }
 
-    public String assignHospital(String patientLocationX, String patientLocationY) {
+    public String assignHospital(int patientLocationX, int patientLocationY) {
         Connection connection = null;
         PreparedStatement statement = null;
         Map<String, Double> distance = new HashMap<String, Double>();
@@ -94,20 +105,14 @@ public class Hospital {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String hospital_id = resultSet.getString("hospital_id");
-                String hos_x = resultSet.getString("location_x");;
-                double location_x = Double.parseDouble(hos_x);
-                //System.out.println(pi);
-                //double x_location = resultSet.getInt("location_x");
-                String hos_y= resultSet.getString("location_y");
-                double location_y = Double.parseDouble(hos_y);
-                double pat_x=Double.parseDouble(String.valueOf(patientLocationX));
-                double pat_y=Double.parseDouble(String.valueOf(patientLocationY));
-                double distanceX = Math.abs(location_x - pat_x);
-                double distanceY = Math.abs(location_y - pat_y);
+                String id = resultSet.getString("hospital_id");
+                int locationX = resultSet.getInt("location_x");
+                int locationY = resultSet.getInt("location_y");
+                int distanceX = Math.abs(locationX - patientLocationX);
+                int distanceY = Math.abs(locationY - patientLocationY);
 
                 dist = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-                distance.put(hospital_id,dist);
+                distance.put(id,dist);
             }
 
             System.out.println(distance);

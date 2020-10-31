@@ -1,12 +1,14 @@
 package lk.spark.ncms.controller;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lk.spark.ncms.database.DBConnectionPool;
 import lk.spark.ncms.dao.PatientDao;
+import lk.spark.ncms.bean.Patient;
 import lk.spark.ncms.dao.QueueDao;
 import lk.spark.ncms.bean.Bed;
 import lk.spark.ncms.bean.Hospital;
-import lk.spark.ncms.bean.Patient;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,24 +34,29 @@ public class PatientServlet extends HttpServlet {
         String patient_id = request.getParameter("patient_id");
         String first_name = request.getParameter("first_name");
         String last_name = request.getParameter("last_name");
-        String contact = request.getParameter("contact");
         String district = request.getParameter("district");
+        int location_x = Integer.parseInt(request.getParameter("location_x"));
+        int location_y = Integer.parseInt(request.getParameter("location_y"));
+        String gender =request.getParameter("gender");
+        String contact = request.getParameter("contact");
         String email = request.getParameter("email");
         String age = request.getParameter("age");
-        String location_x = request.getParameter("location_x");
-        String location_y =request.getParameter("location_y");
+
+
 
 
         Patient patient = new Patient();
         patient.setPatient_id(patient_id);
         patient.setFirst_name(first_name);
         patient.setLast_name(last_name);
-        patient.setContact(contact);
         patient.setDistrict(district);
-        patient.setEmail(email);
-        patient.setAge(age);
         patient.setLocation_x(location_x);
         patient.setLocation_y(location_y);
+        patient.setGender(gender);
+        patient.setContact(contact);
+        patient.setEmail(email);
+        patient.setAge(age);
+
 
 
         PatientDao patientDao = new PatientDao();
@@ -99,8 +106,9 @@ public class PatientServlet extends HttpServlet {
                 String district = resultSet.getString("district");
                 String email = resultSet.getString("email");
                 String age = resultSet.getString("age");
-                String location_x = resultSet.getString("location_x");
-                String location_y = resultSet.getString("location_y");
+                int location_x = Integer.parseInt(resultSet.getString("location_x"));
+                int location_y = Integer.parseInt(resultSet.getString("location_y"));
+             //   String serial_no = resultSet.getString("serial_no");
 
                 PrintWriter printWriter = response.getWriter();
 
@@ -118,43 +126,78 @@ public class PatientServlet extends HttpServlet {
 
                 System.out.println("doGet patient success");
 
-                Hospital hospital = new Hospital();
-                String nearestHospital = hospital.assignHospital(location_x, location_y);
-                System.out.println("Nearest hospital: " + nearestHospital);
 
-                Bed bed = new Bed();
-                int bed_id = bed.allocateBed(nearestHospital, patient_id);
-                System.out.println("Bed ID: " + bed_id);
-                int bedNo = 0;
-
-                if(bed_id == 0){
-                    statement2 = connection.prepareStatement("SELECT distinct hospital_id FROM hospital where hospital_id !='" + nearestHospital + "'");
-                    System.out.println(statement2);
-                    resultSet2 = statement2.executeQuery();
-                    String hosId ="";
-                    int queueLength;
-
-                    /* Allocate a bed */
-                    while(resultSet2.next()) {
-                        if(bed_id==0) {
-                            hosId = resultSet2.getString("hospital_id");
-                            System.out.println(hosId);
-                            bed_id = bed.allocateBed(hosId, patient_id);
-                        }
-                    }
-                    /* If there is no available beds, add to queue */
-                    bedNo = bed_id;
-                    if(bedNo == 0){
-                        QueueDao queue = new QueueDao();
-                        queueLength = queue.addToQueue(patient_id);
-                    }
-
-                }
             }
             connection.close();
 
         } catch (Exception exception) {
 
         }
+    }
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+
+        JsonArray sendToPatientArray = new JsonArray();
+        JsonArray sendToQueueArray = new JsonArray();
+        Connection connection = null;
+        PreparedStatement statement = null;
+        PreparedStatement statement2 = null;
+        int result = 0;
+
+        try {
+            connection = DBConnectionPool.getInstance().getConnection();
+            ResultSet resultSet;
+            ResultSet resultSet2;
+
+            statement = connection.prepareStatement("SELECT patient.serial_no, beds.bed_id AS bed_id, hospital.name, hospital.district FROM patient INNER  JOIN beds ON patient.patient_id=beds.patient_id INNER JOIN hospital ON beds.hospital_id=hospital.hospital_id where patient.patient_id ='"+id+"'");
+            System.out.println(statement);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String serialNo = resultSet.getString("serial_no");
+                String bedId = resultSet.getString("bed_id");
+                String name = resultSet.getString("name");
+                String district = resultSet.getString("district");
+
+                PrintWriter printWriter = response.getWriter();
+
+                JsonObject sendToPatient = new JsonObject();
+                sendToPatient.addProperty("Id", id);
+                sendToPatient.addProperty("serialNo", serialNo);
+                sendToPatient.addProperty("bedId", bedId);
+                sendToPatient.addProperty("District", district);
+                sendToPatientArray.add(sendToPatient);
+            }
+
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            //response.getWriter().write(sendToPatientArray.toString());
+            //System.out.println(sendToPatientArray.toString());
+
+            if(sendToPatientArray.size()!=0) {
+                response.getWriter().write(sendToPatientArray.toString());
+                System.out.println(sendToPatientArray.toString());
+            } else {
+                statement2 = connection.prepareStatement("SELECT patient_queue.id as queueId FROM patient_queue INNER  JOIN patient ON patient.patient_id=patient_queue.patient_id where patient.patient_id ='"+id+"'");
+                System.out.println(statement2);
+                resultSet2 = statement2.executeQuery();
+                while (resultSet2.next()) {
+                    int queueId = resultSet2.getInt("queueId");
+                    PrintWriter printWriter = response.getWriter();
+
+                    JsonObject sendToPatientQueue = new JsonObject();
+                    sendToPatientQueue.addProperty("Id", id);
+                    sendToPatientQueue.addProperty("queueId", queueId);
+                    sendToQueueArray.add(sendToPatientQueue);
+                }
+                response.getWriter().write(sendToQueueArray.toString());
+                System.out.println(sendToQueueArray.toString());
+            }
+            connection.close();
+
+        } catch (Exception exception) {
+
+        }
+
     }
 }

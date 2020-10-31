@@ -43,7 +43,7 @@ public class Bed {
         setPatient_id(patient_id);
         int bed_id = 0;
         int noOfBeds = 10;
-        int bed_count = 0;
+        int bedCount = 0;
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -66,7 +66,7 @@ public class Bed {
             for(int i=0; i< noOfBeds; i++){
                 if(bed[i]==0){
                     bed_id = i+1;
-                    bed_count = bed_id;
+                    bedCount = bed_id;
                     break;
                 }
             }
@@ -109,7 +109,7 @@ public class Bed {
             resultSet = statement2.executeQuery();
 
             if (resultSet.next()) {
-                int id = resultSet.getInt("id");
+                int bed_id = resultSet.getInt("bed_id");
                 String patient = resultSet.getString("patient_id");
                 //queueDetails.put(id,patient);
                 allocateBed(hospital_id, patient);
@@ -123,7 +123,7 @@ public class Bed {
                 resultSet2 = statement4.executeQuery();
 
                 while(resultSet2.next()) {
-                    int currentId = resultSet2.getInt("id");
+                    int currentId = resultSet2.getInt("bed_id");
                     int nextId = currentId-1;
                     System.out.println(nextId);
                     statement5 = connection.prepareStatement("UPDATE patient_queue SET id=" + nextId + " Where id="+ currentId);
