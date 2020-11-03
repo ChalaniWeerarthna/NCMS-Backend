@@ -74,12 +74,7 @@ public class StatisticsServlet extends HttpServlet {
 
                     jsonArray.add(jsonObject);
 
-//                    PrintWriter printWriter = response.getWriter();
-//
-//                    printWriter.println("Hospital name: " + hospital_name);
-//                    printWriter.println("Hospital Level Statistics: " + patientCount);
-//                    request.setAttribute("hosPatientCount", patientCount);
-//                    printWriter.println("\n");
+
                 }
 
                 data.add("hospitalPatients", jsonArray);
@@ -95,7 +90,7 @@ public class StatisticsServlet extends HttpServlet {
             jsonArray = new JsonArray();
             while (resultSet7.next()) {
                 String  district = resultSet7.getString("district");
-                statement2 = connection.prepareStatement("SELECT COUNT(beds.bed_id) AS districtLevel FROM beds INNER JOIN hospital ON beds.hospital_id = hospital.hospital_id WHERE hospital.district ='" + district + "'");
+                statement2 = connection.prepareStatement("SELECT COUNT(beds.bed_id) AS districtLevel FROM beds INNER JOIN hospital ON beds.hospital_id = hospital.hospital_id GROUP BY district");
                 statement5 = connection.prepareStatement("SELECT COUNT(patient_queue.id) AS queueDistrictLevel FROM patient_queue INNER JOIN patient ON patient.patient_id = patient_queue.patient_id WHERE patient.district ='" + district + "'");
                 System.out.println(statement2);
                 System.out.println(statement5);
@@ -103,13 +98,13 @@ public class StatisticsServlet extends HttpServlet {
                 resultSet5 = statement5.executeQuery();
 
 
-                while (resultSet2.next()) {
+               while (resultSet2.next()) {
                     int disPatientCount = resultSet2.getInt("districtLevel");
                     while (resultSet5.next()) {
                         int queueDisPatient = resultSet5.getInt("queueDistrictLevel");
-                        int districtPatientCount = disPatientCount + queueDisPatient;
+                        int districtPatientCount = disPatientCount ;
                         System.out.println(districtPatientCount);
-//                        PrintWriter printWriter = response.getWriter();
+//                      PrintWriter printWriter = response.getWriter();
 
 
                         JsonObject jsonObject = new JsonObject();
@@ -118,13 +113,9 @@ public class StatisticsServlet extends HttpServlet {
 
                         jsonArray.add(jsonObject);
 
-//                        printWriter.println("District: " + district);
-//                        printWriter.println("District Level Statistics: " + districtPatientCount);
-//                        request.setAttribute("disPatientCount", districtPatientCount);
-//                        printWriter.println("\n");
-                    }
+                   }
                     data.add("districtPatients", jsonArray);
-                }
+              }
             }
 
 

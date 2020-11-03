@@ -27,6 +27,11 @@
     </servlet>
 
     <servlet>
+        <servlet-name>BedStatServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.BedStatServlet</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>HospitalListServlet</servlet-name>
         <servlet-class>lk.spark.ncms.controller.HospitalListServlet</servlet-class>
     </servlet>
@@ -56,6 +61,15 @@
         <servlet-class>lk.spark.ncms.controller.PatientListServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>DetailsServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.DetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewStaticsByDoctorServlet</servlet-name>
+        <servlet-class>lk.spark.ncms.controller.ViewStaticsByDoctorServlet</servlet-class>
+    </servlet>
+
 
     <!--    servlet mappings-->
     <servlet-mapping>
@@ -76,6 +90,10 @@
     <servlet-mapping>
         <servlet-name>StatisticsServlet</servlet-name>
         <url-pattern>/Statistics</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BedStatServlet</servlet-name>
+        <url-pattern>/BedStatistics</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>HospitalListServlet</servlet-name>
@@ -108,7 +126,14 @@
         <url-pattern>/PatientList</url-pattern>
     </servlet-mapping>
 
-
+    <servlet-mapping>
+        <servlet-name>DetailsServlet</servlet-name>
+        <url-pattern>/Details</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewStaticsByDoctorServlet</servlet-name>
+        <url-pattern>/StaticsByDoc</url-pattern>
+    </servlet-mapping>
 
 
 </web-app>

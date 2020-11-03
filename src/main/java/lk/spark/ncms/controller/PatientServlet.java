@@ -134,8 +134,9 @@ public class PatientServlet extends HttpServlet {
 
         }
     }
+    /*
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String id = request.getParameter("id");
+        String id = request.getParameter("patient_id");
 
         JsonArray sendToPatientArray = new JsonArray();
         JsonArray sendToQueueArray = new JsonArray();
@@ -162,9 +163,10 @@ public class PatientServlet extends HttpServlet {
                 PrintWriter printWriter = response.getWriter();
 
                 JsonObject sendToPatient = new JsonObject();
-                sendToPatient.addProperty("Id", id);
+                //sendToPatient.addProperty("Id", id);
                 sendToPatient.addProperty("serialNo", serialNo);
                 sendToPatient.addProperty("bedId", bedId);
+                sendToPatient.addProperty("name", name);
                 sendToPatient.addProperty("District", district);
                 sendToPatientArray.add(sendToPatient);
             }
@@ -199,5 +201,5 @@ public class PatientServlet extends HttpServlet {
 
         }
 
-    }
+    }*/
 }

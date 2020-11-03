@@ -59,7 +59,7 @@ public class PatientDao {
                 /* Allocate a bed */
                 while(resultSet2.next()) {
                     if(bedId==0) {
-                        hosId = resultSet2.getString("id");
+                        hosId = resultSet2.getString("hospital_id");
                         System.out.println(hosId);
                         bedId = bed.allocateBed(hosId, patient.getPatient_id());
                     }
